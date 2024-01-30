@@ -1,0 +1,9 @@
+edition = "2021"
+
+# ignore dir
+ignore = [
+     "docs",
+]
+
+group_imports = "StdExternalCrate"
+imports_granularity = "Module"

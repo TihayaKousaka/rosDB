@@ -1,0 +1,66 @@
+[package]
+name = "meta"
+version.workspace = true
+edition.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "cnosdb-meta"
+path = "src/bin/main.rs"
+
+[dependencies]
+config = { path = "../config" }
+error_code = { path = "../common/error_code" }
+limiter_bucket = { path = "../common/limiter_bucket" }
+models = { path = "../common/models" }
+trace = { path = "../common/trace" }
+utils = { path = "../common/utils" }
+protos = { path = "../common/protos", features = ["test"] }
+replication = { path = "../replication" }
+
+async-backtrace = { workspace = true, optional = true }
+async-trait = { workspace = true }
+byteorder = { workspace = true }
+clap = { workspace = true }
+ctrlc = { workspace = true, features = ["termination"] }
+dashmap = { workspace = true }
+once_cell = { workspace = true }
+openraft = { workspace = true, features = ["serde"] }
+parking_lot = { workspace = true }
+rand = { workspace = true }
+reqwest = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+sled = { workspace = true }
+snafu = { workspace = true }
+sys-info = { workspace = true }
+tokio = { workspace = true }
+toml = { workspace = true }
+tonic = { workspace = true }
+tracing = { workspace = true }
+tracing-futures = { workspace = true }
+uuid = { workspace = true }
+walkdir = { workspace = true }
+psutil = { workspace = true, optional = true }
+sysinfo = { workspace = true, optional = true }
+
+
+futures = { workspace = true, features = ["alloc"] }
+tower = { workspace = true }
+heed = { workspace = true }
+heed-traits = { workspace = true }
+warp = { workspace = true }
+http = { workspace = true }
+http-body = { workspace = true }
+
+[target.'cfg(unix)'.dependencies]
+pprof = { workspace = true, features = ["flamegraph", "protobuf-codec", "frame-pointer"] }
+
+[features]
+default = []
+backtrace = ["async-backtrace"]
+meta_e2e_test = ["psutil", "sysinfo"]
+
+[dev-dependencies]
+maplit = "1.0.2"

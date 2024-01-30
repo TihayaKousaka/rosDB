@@ -1,0 +1,48 @@
+namespace models;
+
+table PingBody {
+    payload: [ubyte];
+}
+
+enum FieldType: int {
+    Unknown = -1,
+    Float,
+    Integer,
+    Unsigned,
+    Boolean,
+    String,
+}
+
+enum ColumnType : int {
+    Unknown = -1,
+    Time,
+    Tag,
+    Field,
+}
+
+table Values {
+    float_value: [float64];
+    int_value: [int64];
+    uint_value: [uint64];
+    bool_value: [bool];
+    string_value: [string];
+}
+
+table Column {
+    name: string;
+    column_type: ColumnType;
+    field_type: FieldType;
+    col_values: Values;
+    nullbits: [ubyte];
+}
+
+table Table {
+    tab: string;
+    columns: [Column];
+    num_rows: uint64;
+}
+
+table Points {
+    db: string;
+    tables: [Table];
+}

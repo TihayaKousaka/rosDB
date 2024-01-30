@@ -1,0 +1,35 @@
+[package]
+name = "spi"
+version.workspace = true
+edition.workspace = true
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+models = { path = "../../common/models" }
+error_code = { path = "../../common/error_code" }
+meta = { path = "../../meta" }
+coordinator = { path = "../../coordinator" }
+tskv = { path = "../../tskv" }
+protos = { path = "../../common/protos" }
+config = { path = "../../config" }
+trace = { path = "../../common/trace" }
+protocol_parser = { path = "../../common/protocol_parser" }
+flatbuffers = { workspace = true }
+async-trait = { workspace = true }
+datafusion = { workspace = true }
+snafu = { workspace = true, features = ["backtraces"] }
+derive_builder = { workspace = true }
+object_store = { workspace = true }
+url = { workspace = true }
+tempfile = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+bytes = { workspace = true }
+snap = { workspace = true }
+lazy_static = { workspace = true }
+duration-str = { workspace = true }
+futures = { workspace = true }
+arrow-flight = { workspace = true }
+tonic = { workspace = true }
+chrono = { workspace = true }
+rand = { workspace = true }

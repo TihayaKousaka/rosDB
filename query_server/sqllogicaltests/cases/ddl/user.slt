@@ -1,0 +1,45 @@
+statement ok
+drop user if exists test_alter_options_u;
+
+statement ok
+create user if not exists test_alter_options_u;
+
+statement ok
+alter user test_alter_options_u set comment = 'xxx ccc';
+
+# import data to tskv table
+query I
+select * from cluster_schema.users where user_name = 'test_alter_options_u';
+----
+test_alter_options_u false {"hash_password":"*****","comment":"xxx ccc"}
+
+statement ok
+alter user test_alter_options_u set comment = 'ooo ooo';
+
+# import data to tskv table
+query I
+select * from cluster_schema.users where user_name = 'test_alter_options_u';
+----
+test_alter_options_u false {"hash_password":"*****","comment":"ooo ooo"}
+
+statement ok
+alter user test_alter_options_u set must_change_password = false;
+
+# import data to tskv table
+query I
+select * from cluster_schema.users where user_name = 'test_alter_options_u';
+----
+test_alter_options_u false {"hash_password":"*****","must_change_password":false,"comment":"ooo ooo"}
+
+statement ok
+alter user test_alter_options_u set must_change_password = true;
+
+# import data to tskv table
+query I
+select * from cluster_schema.users where user_name = 'test_alter_options_u';
+----
+test_alter_options_u false {"hash_password":"*****","must_change_password":true,"comment":"ooo ooo"}
+
+# table not found
+statement error .*Table not found: \\"a_non_existent_table\\".*
+drop table a_non_existent_table;

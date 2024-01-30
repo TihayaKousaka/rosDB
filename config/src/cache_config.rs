@@ -1,0 +1,69 @@
+use std::sync::Arc;
+
+use serde::{Deserialize, Serialize};
+
+use crate::check::{CheckConfig, CheckConfigItemResult, CheckConfigResult};
+use crate::codec::bytes_num;
+use crate::override_by_env::{entry_override, OverrideByEnv};
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct CacheConfig {
+    #[serde(with = "bytes_num", default = "CacheConfig::default_max_buffer_size")]
+    pub max_buffer_size: u64,
+    #[serde(default = "CacheConfig::default_partitions")]
+    pub partition: usize,
+}
+
+impl CacheConfig {
+    fn default_max_buffer_size() -> u64 {
+        128 * 1024 * 1024
+    }
+
+    fn default_partitions() -> usize {
+        num_cpus::get()
+    }
+}
+
+impl OverrideByEnv for CacheConfig {
+    fn override_by_env(&mut self) {
+        entry_override(&mut self.max_buffer_size, "CNOSDB_CACHE_MAX_BUFFER_SIZE");
+        entry_override(&mut self.partition, "CNOSDB_CACHE_PARTITION");
+    }
+}
+
+impl Default for CacheConfig {
+    fn default() -> Self {
+        Self {
+            max_buffer_size: Self::default_max_buffer_size(),
+            partition: Self::default_partitions(),
+        }
+    }
+}
+
+impl CheckConfig for CacheConfig {
+    fn check(&self, _: &crate::Config) -> Option<CheckConfigResult> {
+        let config_name = Arc::new("cache".to_string());
+        let mut ret = CheckConfigResult::default();
+        if self.max_buffer_size < 1024 * 1024 {
+            ret.add_warn(CheckConfigItemResult {
+                config: config_name.clone(),
+                item: "max_buffer_size".to_string(),
+                message: "'max_buffer_size' maybe too small(less than 1M)".to_string(),
+            });
+        }
+
+        if self.partition > 1024 {
+            ret.add_warn(CheckConfigItemResult {
+                config: config_name,
+                item: "partition".to_string(),
+                message: "'partition' maybe too big(more than 1024)".to_string(),
+            });
+        }
+
+        if ret.is_empty() {
+            None
+        } else {
+            Some(ret)
+        }
+    }
+}

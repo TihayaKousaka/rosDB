@@ -1,0 +1,31 @@
+[package]
+name = "client"
+description = "Command Line Client for Cnosdb."
+version.workspace = true
+edition.workspace = true
+readme = "README.md"
+
+[[bin]]
+name = "cnosdb-cli"
+path = "src/main.rs"
+
+[dependencies]
+http_protocol = { path = "../common/http_protocol", features = ["http_client"] }
+
+clap = { workspace = true, features = ["derive", "cargo"] }
+datafusion = { workspace = true }
+dirs = { workspace = true }
+env_logger = { workspace = true }
+rustyline = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "sync", "parking_lot", "tracing"] }
+async-backtrace = { workspace = true, optional = true }
+walkdir = { workspace = true }
+anyhow = { workspace = true }
+base64 = { workspace = true }
+fly-accept-encoding = { workspace = true }
+reqwest = { workspace = true }
+rpassword = { workspace = true }
+
+[features]
+default = []
+backtrace = ["async-backtrace"]

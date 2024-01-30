@@ -1,0 +1,127 @@
+##########
+## Stream query DDL
+##########
+
+statement ok
+drop table IF EXISTS readings_kv;
+
+# create tskv table as stream source
+statement ok
+create table readings_kv(
+  latitude double,
+  longitude double,
+  elevation double,
+  velocity double,
+  heading double,
+  grade double,
+  fuel_consumption double,
+  load_capacity double,
+  fuel_capacity double,
+  nominal_fuel_consumption double,
+  tags(name, fleet, driver, model, device_version)
+);
+
+statement ok
+DROP TABLE IF EXISTS TskvTable;
+
+# field not found
+statement error .*Unable to get field named \\"time_x\\".*
+CREATE STREAM TABLE TskvTable (
+  time_x TIMESTAMP,
+  name STRING,
+  driver STRING,
+  elevation DOUBLE
+) WITH (
+  db = 'public',
+  table = 'readings_kv',
+  event_time_column = 'time'
+) engine = tskv;
+
+# missing option 'db'
+statement error .*Missing option \[db\] of table tskvtabl.*
+CREATE STREAM TABLE TskvTable (
+  time TIMESTAMP,
+  name STRING,
+  driver STRING,
+  elevation DOUBLE
+) WITH (
+  table = 'readings_kv',
+  event_time_column = 'time'
+) engine = tskv;
+
+# missing option 'table'
+statement error .*Missing option \[table\] of table tskvtabl.*
+CREATE STREAM TABLE TskvTable (
+  time TIMESTAMP,
+  name STRING,
+  driver STRING,
+  elevation DOUBLE
+) WITH (
+  db = 'public',
+  event_time_column = 'time'
+) engine = tskv;
+
+# missing option 'event_time_column'
+statement error .*Missing option \[event_time_column\] of table tskvtabl.*
+CREATE STREAM TABLE TskvTable (
+  time TIMESTAMP,
+  name STRING,
+  driver STRING,
+  elevation DOUBLE
+) WITH (
+  db = 'public',
+  table = 'readings_kv'
+) engine = tskv;
+
+# engine not found
+statement error .*Unsupported stream type: xxx.*
+CREATE STREAM TABLE TskvTable (
+  time TIMESTAMP,
+  name STRING,
+  driver STRING,
+  elevation DOUBLE
+) WITH (
+  db = 'public',
+  table = 'readings_kv',
+  event_time_column = 'time'
+) engine = xxx;
+
+# same col name
+statement error Arrow error: Io error: Status \{ code: Internal, message: "Execute logical plan: Semantic error: Field or Tag have the same name time", .*
+CREATE STREAM TABLE TskvTable (
+  time TIMESTAMP,
+  time TIMESTAMP,
+  name STRING,
+  driver STRING,
+  elevation DOUBLE
+) WITH (
+  db = 'public',
+  table = 'readings_kv',
+  event_time_column = 'time'
+) engine = tskv;
+
+# event_time_column does not match
+statement error .*Schema error: Unable to get field named \\"timex\\"\. Valid fields: \[\\"time\\", \\"name\\", \\"fleet\\", \\"driver\\", \\"model\\", \\"device_version\\", \\"latitude\\", \\"longitude\\", \\"elevation\\", \\"velocity\\", \\"heading\\", \\"grade\\", \\"fuel_consumption\\", \\"load_capacity\\", \\"fuel_capacity\\", \\"nominal_fuel_consumption\\"\]", .*
+CREATE STREAM TABLE TskvTable (
+  time TIMESTAMP,
+  name STRING,
+  driver STRING,
+  elevation DOUBLE
+) WITH (
+  db = 'public',
+  table = 'readings_kv',
+  event_time_column = 'timex'
+) engine = tskv;
+
+# data type of event_time_column does not match
+statement error .*Invalid option \[event_time_column\] of table tskvtable: The data type of column 'latitude' is not timestamp.*
+CREATE STREAM TABLE TskvTable (
+  time TIMESTAMP,
+  name STRING,
+  driver STRING,
+  elevation DOUBLE
+) WITH (
+  db = 'public',
+  table = 'readings_kv',
+  event_time_column = 'latitude'
+) engine = tskv;

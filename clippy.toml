@@ -1,0 +1,7 @@
+# for `disallowed_method`:
+# https://rust-lang.github.io/rust-clippy/master/index.html#disallowed_method
+disallowed-methods = []
+
+# max arguments
+# self and 5 normal arguments
+too-many-arguments-threshold = 10

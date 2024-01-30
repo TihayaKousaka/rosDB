@@ -1,0 +1,15 @@
+FROM --platform=$TARGETPLATFORM ubuntu
+RUN apt update && apt install -y curl iputils-ping wget ca-certificates git openssl unzip && \
+    apt clean && update-ca-certificates
+
+ARG git_hash
+ENV CNOSDB_GIT_HASH = $git_hash
+
+ENV RUST_BACKTRACE 1
+
+ARG TARGETPLATFORM
+COPY ./$TARGETPLATFORM/cnosdb-meta /usr/bin/cnosdb-meta
+
+COPY ./meta/config/config.toml /etc/cnosdb/cnosdb-meta.conf
+
+CMD ["cnosdb-meta"]

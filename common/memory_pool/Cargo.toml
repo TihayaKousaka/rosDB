@@ -1,0 +1,15 @@
+[package]
+name = "memory_pool"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+trace = { path = "../trace" }
+parking_lot = { workspace = true, features = ["nightly"] }
+
+datafusion = { workspace = true }
+async-backtrace = { workspace = true, optional = true }
+
+[features]
+default = []
+backtrace = ["async-backtrace"]

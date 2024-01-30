@@ -1,0 +1,69 @@
+[package]
+name = "query"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+protos = { path = "../../common/protos" }
+trace = { path = "../../common/trace" }
+tskv = { path = "../../tskv" }
+models = { path = "../../common/models" }
+utils = { path = "../../common/utils" }
+config = { path = "../../config" }
+meta = { path = "../../meta" }
+coordinator = { path = "../../coordinator" }
+protocol_parser = { path = "../../common/protocol_parser" }
+memory_pool = { path = "../../common/memory_pool" }
+spi = { path = "../spi" }
+metrics = { path = "../../common/metrics" }
+
+
+async-trait = { workspace = true }
+datafusion = { workspace = true }
+datafusion-proto = { workspace = true }
+chrono = { workspace = true }
+criterion = { workspace = true, features = ["async_tokio"] }
+flatbuffers = { workspace = true }
+futures = { workspace = true }
+minivec = { workspace = true }
+num_cpus = { workspace = true }
+parking_lot = { workspace = true }
+paste = { workspace = true }
+pin-project = { workspace = true }
+tokio = { workspace = true, features = ["full", "tracing"] }
+tokio-util = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+sled = { workspace = true }
+snafu = { workspace = true }
+derive_builder = { workspace = true }
+lazy_static = { workspace = true }
+serde_json = { workspace = true }
+object_store = { workspace = true }
+url = { workspace = true }
+async-recursion = { workspace = true }
+tempfile = { workspace = true }
+bytes = { workspace = true }
+regex = { workspace = true }
+async-backtrace = { workspace = true, optional = true }
+bincode = { workspace = true }
+dirs = { workspace = true }
+once_cell = { workspace = true }
+geo = { workspace = true }
+geozero = { workspace = true, features = ["with-wkb"]}
+
+[features]
+default = []
+backtrace = ["async-backtrace"]
+
+# use libc on unix like platforms to set worker priority in DedicatedExecutor
+[target."cfg(unix)".dependencies.libc]
+version = "0.2"
+
+[[bench]]
+harness = false
+name = "aggregate_function"
+
+[[bench]]
+harness = false
+name = "scalar_function"

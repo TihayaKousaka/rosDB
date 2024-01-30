@@ -1,0 +1,17 @@
+[package]
+name = "metrics"
+version.workspace = true
+edition.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+trace = { path = "../trace" }
+prometheus = { version = "0.13.2", default-features = false }
+once_cell = { workspace = true }
+parking_lot = { workspace = true }
+async-backtrace = { workspace = true, optional = true }
+
+[features]
+default = []
+backtrace = ["async-backtrace"]
